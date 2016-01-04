@@ -1,0 +1,38 @@
+serial-map.go
+    1 writer, no reader:
+    32+ lakh inserts per second
+
+concurrent-map.go:
+    10 readers, 10 writers:
+        15.5+ lakh inserts per second
+    0 readers, 10 writers:
+        22+ lakh inserts per second
+    10 readers, 10 writers, GOMAXPROCS=2:
+        7.5+ lakh inserts per second
+
+concurrent-map-channels.go
+    10 readers, 10 writers:
+        5.2 lakh inserts per second
+    0 readers, 10 writers:
+        9+ lakh inserts per second
+    10 readers, 10 writers, buffered channels (len=3):
+        4.7 lakh inserts per second
+    10 readers, 10 writers, GOMAXPROCS=2:
+        1.4+ lakh inserts per second
+
+Mutex vs RWMutex. Total 'operations', not inserts
+-------------------------------------------------
+
+    1 writer, 10 readers
+
+    GOMAXPROCS=1, without runtime.GoSched
+    mutex       rwmutex
+    72 Lakhs    30 Lakhs
+
+    GOMAXPROCS=1, with runtime.GoSched
+    mutex       rwmutex
+    42 Lakhs    42 Lakhs
+
+    GOMAXPROCS=2, with runtime.GoSched
+    mutex       rwmutex
+    26.7 Lakhs    22.4 Lakhs
